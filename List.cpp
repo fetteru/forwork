@@ -103,7 +103,7 @@ class List
         if(isEmpty())return false;
         return header->next->value;
      }
-     int getend()
+     int getend()//获取尾部结点的值
      {
         if(isEmpty())return false;
         return rear->value;
@@ -124,11 +124,86 @@ class List
      }
      bool insert(int pos,int val)
      {
+         if(pos<1||pos>length)return false;
+         if(pos==length)
+         {
+            pushBack(val);
+            return true;
+         }
+         Lnode* p = new Lnode(val);
+         Lnode* q = header;
+         pos--;
+         while(pos)
+         {
+            q=q->next;
+            pos--;
+         }
+         p->next = q->next;
+         q->next = p;
+         length++;
+         return true;
+
 
      }
-     bool remove(int val)//按值删除
-     bool reverse()//反转链表
-     bool clear()//清空链表
+     int find(int val)//按值查找
+     {
+      int pos = 1;
+      Lnode* p = header->next;
+      while(p != nullptr&&val != p->value)
+      {
+         pos++;
+         p = p->next;
+      }
+      if(pos<=length)return pos;
+      else return -1;//-1表示没找到
+
+     }
+     bool remove(int val)
+     {
+      if(isEmpty())return false;//空表
+      Lnode* p = header;
+      while(p->next != nullptr)//还有下个结点
+      {
+         if(p->next->value==val)//找到了
+         {
+            Lnode* q = p->next;
+            p->next = q->next;
+            if(rear==q)rear = p;
+            delete q;
+            length--;
+            return true;
+         }
+         p = p->next;
+      }
+      return false;
+
+
+     }//按值删除
+     bool reverse()
+     {
+      //这是一个带哨兵结点和尾节点的链表
+      if(isEmpty())return true;//空链表翻转还是空链表，不必操作
+      Lnode* p = header->next;
+      while(1)
+      {
+         Lnode* q = p->next;
+         if(q==nullptr)break;
+         p->next = q->next;
+         q->next = header->next;
+         header->next = q;
+      }
+      rear = p;
+      return true;
+
+     }//反转链表
+     bool clear()
+     {
+        while(!isEmpty())
+        {
+         del();
+        }
+        return true;
+     };//清空链表
 
 };
 
@@ -153,13 +228,21 @@ int main()
    cout<<L.rear->value<<endl;
    L.pushBack(12);
    L.print();
-   int val = L.gethead();
-   int end = L.getend();
-   int x = L.get(3);
-   int y = L.get(2);
-   cout<<val<<" "<<end<<" "<<x<<" "<<y<<" ";
-
-
+   L.print();
+   L.insert(3,99);
+   L.insert(4,33);
+   L.insert(6,31);
+   L.print();
+   int val = L.get(6);
+   int pos1 = L.find(31);
+   L.remove(4);
+   L.print();
+   int pos2 = L.find(4);
+   cout<<val<<endl<<pos1<<endl<<pos2<<endl;//打印val
+   L.reverse();
+   L.print();
+   L.clear();
+   L.print();
 
    return 0;
 
