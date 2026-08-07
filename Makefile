@@ -2,22 +2,20 @@
 CXX = g++
 CXXFLAGS = -std=c++11 -Wall
 
-# Target executable name
-TARGET = List
+# Auto-find all .cpp files
+SRCS = $(wildcard *.cpp)
+# Corresponding .exe targets
+TARGETS = $(SRCS:.cpp=.exe)
 
-# Default target: build
-all: $(TARGET)
+# Default: build all
+all: $(TARGETS)
 
-# Build rule
-$(TARGET): List.cpp
-	$(CXX) $(CXXFLAGS) List.cpp -o $(TARGET)
+# Generic rule: build xxx.cpp into xxx.exe
+%.exe: %.cpp
+	$(CXX) $(CXXFLAGS) $< -o $@
 
-# Build and run
-run: $(TARGET)
-	./$(TARGET).exe
-
-# Clean up generated files (Windows compatible)
+# Clean all executables
 clean:
-	-del /Q $(TARGET).exe 2>nul
+	-del /Q *.exe 2>nul
 
-.PHONY: all run clean
+.PHONY: all clean
