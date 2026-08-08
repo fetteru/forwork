@@ -47,6 +47,10 @@ class Stack
     };
     return arr[top];
    }
+   int size()
+   {
+    return top+1;
+   }
 
 
 
@@ -61,16 +65,20 @@ struct Lnode
 
 class SList//链栈
 {
-    pubilc:
+    public:
     Lnode* top = nullptr;//不带头结点的链栈
+    int len;
     //不必考虑栈的长度
     SList()
     {
-
+        len = 0;
     }
     ~SList()
     {
-
+        while(!isEmpty())
+        {
+            pop();
+        }
     }
     bool isEmpty()
     {
@@ -78,9 +86,10 @@ class SList//链栈
     }
     bool push(int val)
     {
-        Lnode* p = Lnode(val);
+        Lnode* p = new Lnode(val);//new
         p->next=top;
         top = p;
+        len++;
         return true;
     }
     bool pop()
@@ -88,42 +97,79 @@ class SList//链栈
         if(isEmpty())return false;
         Lnode* p = top;
         top = top->next;
+        len--;
         delete p;
+        return true;
     }
     int Top()
     {
-        if(isEmpty)
+        if(isEmpty())
         {
             throw runtime_error("stack is empty");
         }
-        return top->val;
+        return top->value;
+    }
+    int size()
+    {
+        return len;
     }
 
 
-}
+};
 
 class queue
 {
     //FIFO
     public:
     int arr[Maxsize];
-    int top;//队头
+    int front;//队头
     int rear;//队尾
     queue()
     {
-        top=0;
+        front=0;
         rear=0;
     }
     ~queue(){};
     bool isEmpty()
     {
-        if(top==rear)
+        return front==rear;
     }
-}
+    bool isFull()
+    {
+        return (rear+1)%Maxsize==front;
+    }
+    bool push(int val)
+    {
+        //从队尾插入
+        if(isFull())return false;//队列满了
+        arr[rear]=val;
+        rear = (rear+1)%Maxsize;
+        return true;
+    }
+    bool pop()
+    {
+        if(isEmpty())return false;//队列空
+        front = (front+1)%Maxsize;
+        return true;
+    }
+    int Top()
+    {
+        if(isEmpty())
+        {
+            throw runtime_error("队列为空");
+        }
+        return arr[front];
+    }
+    int size()
+    {
+        return (rear-front+Maxsize)%Maxsize;
+    }
+};
 
 int main()
 {
 
+    /*
     Stack St;
     St.push(3);
     cout<<St.Top()<<endl;
@@ -133,8 +179,20 @@ int main()
     cout<<St.Top()<<endl;
     St.pop();
     cout<<St.Top()<<endl;
+    */
 
+    queue Q;
+    Q.push(3);
+    cout<<Q.Top()<<endl;
+    Q.push(4);
+    Q.pop();
+    cout<<Q.Top()<<endl;
 
+    SList Sl;
+    Sl.push(5);
+    cout<<Sl.Top()<<endl;
+    Sl.push(6);
+    cout<<Sl.Top()<<endl;
 
 
 
