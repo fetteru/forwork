@@ -1,5 +1,5 @@
 #include<iostream>
-
+#include<algorithm>
 #include<vector>
 
 using namespace std;
@@ -18,9 +18,8 @@ class Tree
     public:
     trNode* root = nullptr;
 
-    int deepth;
+
     Tree(){
-        deepth = 0;
 
     }
     ~Tree()
@@ -34,6 +33,10 @@ class Tree
     //插入操作
     void add(int val)
     {
+        if(search(val))
+        {
+            throw runtime_error("can't insert existed val");
+        }
         trNode* node = new trNode(val);
         if(isEmpty())
         {
@@ -99,6 +102,81 @@ class Tree
         }
         return false;
     }
+    int height()
+    {
+        return heigh(root);
+    }
+    int size()
+    {
+        return size(root);
+    }
+    int numOfleaf()
+    {
+        return numOfleaf(root);
+    }
+    bool DelforT(int val)
+    {
+        trNode* s = new trNode(0);
+        s->left = root;
+        trNode* parent = s;
+        trNode* p = root;
+        bool flag = false;//false:p是parent的左孩子
+
+        while(p!=nullptr&&p->val!=val)
+        {
+            parent = p;
+            if(val < p->val)
+            {
+               p = p->left;
+               flag = 0;
+            }
+            else
+            {
+               p = p->right;
+               flag = 1;
+            }
+        }
+        if(p==nullptr)
+        {
+            delete s;
+            return false;
+        }
+
+        if(p->left==nullptr||p->right==nullptr)
+        {
+            trNode* child = p->left?p->left:p->right;
+            if(flag)
+            {
+                parent->right = child;
+            }
+            else
+            {
+                parent->left = child;
+            }
+            delete p;
+        }
+        else
+        {
+        //p结点的左右孩子都不为空
+            trNode* succParent = p;
+            trNode* succ = p->right;
+            while(succ->left!=nullptr)
+            {
+            succParent = succ;
+            succ = succ->left;
+            }
+            p->val = succ->val;
+            if(succParent==p)succParent->right = succ->right;
+            else succParent->left = succ->right;
+            delete succ;
+        }
+
+        
+        root = s->left;//同步根指针
+        delete s;
+        return true;
+
+    }
 
     private:    
 
@@ -147,7 +225,36 @@ class Tree
         }
 
     }
+    int heigh(trNode* root)
+    {
+        if(root==nullptr)return 0;
+        if(root->left==nullptr&&root->right==nullptr)
+        {
+            return 1;//出口
+        }
+        else
+        {
+            return max(heigh(root->left),heigh(root->right))+1;
+        }
 
+    }
+    int size(trNode* root)//统计节点数
+    {
+       if(root==nullptr)return 0;
+       else return size(root->left)+size(root->right)+1;
+    }
+    int numOfleaf(trNode* root)
+    {
+        if(root==nullptr)return 0;
+        if(root->left==nullptr&&root->right==nullptr)
+        {
+            return 1;
+        }
+        else
+        {
+           return numOfleaf(root->left)+numOfleaf(root->right);
+        }
+    }
 
 };
 
@@ -161,11 +268,19 @@ int main()
     T.add(5);
     T.add(3);
     T.add(4);
-    T.add(5);
+    T.add(9);
     T.add(6);
     T.add(7);
     T.add(1);
+    T.add(8);
     //T.preorder();
+    T.Bfs_tr();
+    cout<<endl;
+    int h = T.height();
+    cout<<h<<endl;
+    cout<<T.size()<<endl;
+    cout<<T.numOfleaf()<<endl;
+    T.DelforT(3);
     T.Bfs_tr();
     
 
