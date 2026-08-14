@@ -128,12 +128,12 @@ class Tree
             if(val < p->val)
             {
                p = p->left;
-               flag = 0;
+               flag = false;
             }
             else
             {
                p = p->right;
-               flag = 1;
+               flag = true;
             }
         }
         if(p==nullptr)
@@ -177,7 +177,51 @@ class Tree
         return true;
 
     }
+    bool DelforTr(int val)
+    {
+        //实现二叉树的删除
+        trNode** cur = &root;
+        while(*cur!=nullptr&&val!=(*cur)->val )
+        {
+            
+            if(val<(*cur)->val)
+            { 
+                cur = &((*cur)->left);
+            }
+            else
+            {
+                cur = &((*cur)->right);
+            }
 
+        }
+        if(*cur == nullptr)//没找到
+        {
+            return false;
+        }
+        trNode* p = *cur;
+
+        if(p->left==nullptr||p->right==nullptr)
+        {
+            *cur = (p->left?p->left:p->right);
+            delete p;
+        }
+        else
+        {
+            //两个孩子，找直接后继（中序后继）
+            trNode** succSlot = &(p->right);
+            while((*succSlot)->left!=nullptr)
+              succSlot = &((*succSlot)->left);
+            trNode* succ = *succSlot;
+            p->val = succ->val;
+            *succSlot = succ->right;
+            delete succ;
+        }
+        
+
+
+        return true;
+        
+    }
     private:    
 
     void preorder(trNode* root)//前序遍历打印，根左右
