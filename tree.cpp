@@ -1,4 +1,5 @@
 #include<iostream>
+#include<stdexcept>
 #include<algorithm>
 #include<vector>
 
@@ -10,12 +11,12 @@ struct trNode
     trNode* left;
     trNode* right;
     trNode(int value):val(value),left(nullptr),right(nullptr){};
-};
+}
 
 
-class Tree
+class Tree//二叉排序树
 {
-    public:
+    private:
     trNode* root = nullptr;
 
 
@@ -24,7 +25,7 @@ class Tree
     }
     ~Tree()
     {
-
+        destroy(root);
     }
     bool isEmpty()
     {
@@ -269,7 +270,7 @@ class Tree
         }
 
     }
-    int heigh(trNode* root)
+    int height(trNode* root)
     {
         if(root==nullptr)return 0;
         if(root->left==nullptr&&root->right==nullptr)
@@ -299,7 +300,13 @@ class Tree
            return numOfleaf(root->left)+numOfleaf(root->right);
         }
     }
-
+    void destroy(trNode* node)
+    {
+        if(node==nullptr)return;
+        destroy(node->left);
+        destroy(node->right);
+        delete node;
+    }
 };
 
 
