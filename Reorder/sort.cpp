@@ -37,9 +37,7 @@ void selectSort(vector<int>& arr)
     {
         if(arr[i]>arr[j])
         {
-            int t = arr[i];
-            arr[i] = arr[j];
-            arr[j] = t;
+            swap(arr[i],arr[j]);
         }
     }
    }
@@ -82,7 +80,91 @@ void shellSort(vector<int>& arr)
     }
 }
 //归并排序
+int depth = 0;
+
+void merge(vector<int>& arr,int l,int m,int r)//合并
+{
+    vector<int> B(r-l+1);
+    int i=l,j=m+1;
+    int k = 0;
+    for(;i<=m&&j<=r;k++)
+    {
+        if(arr[i]<=arr[j])
+        {
+            B[k]=arr[i++];
+        }
+        else{
+            B[k]=arr[j++];
+        }
+    }
+    while(i<=m)B[k++]=arr[i++];
+    while(j<=r)B[k++]=arr[j++];
+    for(int s=l;s<=r;s++)
+    {
+        arr[s] = B[s-l];
+    }
+
+ 
+}
+void mergeSort(vector<int>& arr,int l,int r)
+{
+    cout << string(depth*2,' ') << "进入  sort(" << l << "," << r << ")\n";
+    if(l>=r)
+    {
+        cout << string(depth*2,' ') << "返回  [" << l << "," << r << "] 单元素\n";
+        return;
+    }
+    int m = l+(r-l)/2;
+    depth++;
+    mergeSort(arr,l,m);
+    mergeSort(arr,m+1,r);
+    depth--;
+    if(arr[m]<=arr[m+1])
+    {
+        cout << string(depth*2,' ') << "跳过merge [" << l << "," << r << "]\n";
+        return;
+    }//两半已各自有序且衔接有序，跳过合并
+    merge(arr,l,m,r);
+    cout << string(depth*2,' ') << "完成  [" << l << "," << r << "] m=" << m << "\n";
+}
+void mergeSort(vector<int>& arr)
+{
+    if(!arr.empty())
+       mergeSort(arr,0,(int)arr.size()-1);
+}
 //快速排序
+//划分：partition以arr[r]为基准
+int partition(vector<int>& arr,int l,int r)
+{
+    int pivot = arr[r];
+    int i = l-1;//i是“小于区”的右边界
+    for(int j=l;j<r;j++)
+    {
+        if(arr[j]<pivot)
+        {
+            i++;
+            swap(arr[i],arr[j]);
+        }
+    }
+    swap(arr[i+1],arr[r]);//将pivot放到中间
+    return i+1;
+}
+void quickSort(vector<int>& arr,int l,int r)
+{
+    if(l>=r)return;
+    int p = partition(arr,l,r);
+    quickSort(arr,l,p-1);
+    quickSort(arr,p+1,r);
+}
+void quickSort(vector<int>& arr)
+{
+    if(!arr.empty())
+    {
+        int l=0,r=arr.size()-1;
+        quickSort(arr,l,r); 
+    }
+}
+
 //堆排序
 
 
@@ -98,7 +180,7 @@ bool check(vector<int> arr)
 int main()
 {
     vector<int> arr={2,3,6,7,61,34,45,11,85,77,1,9,18};
-    shellSort(arr);
+    selectSort(arr);
     for(int x : arr)
     {
         cout<<x<<" ";
